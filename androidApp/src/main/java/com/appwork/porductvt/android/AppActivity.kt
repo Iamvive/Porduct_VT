@@ -33,9 +33,14 @@ class AppActivity : ComponentActivity() {
                 ) {
                     RenderFeeds(
                         feedsViewModel = feedsViewModel,
+                        didTapFeedItem = { didTapFeedItem(it) },
                     )
                 }
             }
         }
+    }
+
+    private fun didTapFeedItem(id: String) {
+        println("Item with id $id is tapped")
     }
 }

@@ -5,7 +5,7 @@ import kotlin.random.Random
 
 object IdUtils {
     fun getRandomIntID() = RandomIntId(
-        id = Random.nextInt()
+        id = Random.nextInt(1, 1000)
     )
 }
 

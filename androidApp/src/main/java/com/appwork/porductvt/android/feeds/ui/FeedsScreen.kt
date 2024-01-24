@@ -35,6 +35,7 @@ import com.appwork.porductvt.feeds.ui.Feed.FeedWithDate
 @Composable
 fun RenderFeeds(
     feedsViewModel: FeedsViewModel,
+    didTapFeedItem: (String) -> Unit,
 ) {
     val feedState = feedsViewModel.feedsUIState.collectAsState(
         initial = FeedsState(
@@ -45,20 +46,24 @@ fun RenderFeeds(
 
     feedState.value.feeds?.let {
         LazyColumn(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(Color.LightGray),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            items(it) { feed -> RenderFeedsByType(feed) }
+            items(it) { feed -> RenderFeedsByType(feed, didTapFeedItem) }
         }
     } ?: RenderEmptyView()
 }
 
 @Composable
-private fun RenderFeedsByType(feed: Feed) {
+private fun RenderFeedsByType(
+    feed: Feed,
+    didTapFeedItem: (String) -> Unit,
+) {
     when (feed) {
-        is FeedData -> RenderFeedItem(feed = feed)
+        is FeedData -> RenderFeedItem(feed = feed, didTapFeedItem = didTapFeedItem)
         is FeedWithDate -> RenderDateView(title = feed.text)
     }
 }
@@ -76,17 +81,17 @@ fun RenderEmptyView(
     )
 }
 
-@Preview
 @Composable
 fun RenderFeedItem(
     modifier: Modifier = Modifier,
     feed: FeedData = FeedsData.getFeedData(),
+    didTapFeedItem: (String) -> Unit,
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 4.dp, end = 4.dp)
-            .clickable { }
+            .clickable { didTapFeedItem(feed.id + feed.text)  }
     ) {
         Card(
             modifier = modifier
