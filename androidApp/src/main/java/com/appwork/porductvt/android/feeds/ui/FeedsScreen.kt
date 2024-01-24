@@ -1,12 +1,15 @@
 package com.appwork.porductvt.android.feeds.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,11 +18,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.appwork.porductvt.android.feeds.domain.FeedsViewModel
+import com.appwork.porductvt.android.sampledata.FeedsData
 import com.appwork.porductvt.feeds.state.FeedsState
 import com.appwork.porductvt.feeds.ui.Feed
 import com.appwork.porductvt.feeds.ui.Feed.FeedData
@@ -32,12 +39,17 @@ fun RenderFeeds(
     val feedState = feedsViewModel.feedsUIState.collectAsState(
         initial = FeedsState(
             isLoading = true,
-            feeds = null
-        )
+            feeds = null,
+        ),
     )
 
     feedState.value.feeds?.let {
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+                .background(Color.LightGray),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
             items(it) { feed -> RenderFeedsByType(feed) }
         }
     } ?: RenderEmptyView()
@@ -51,29 +63,41 @@ private fun RenderFeedsByType(feed: Feed) {
     }
 }
 
+@Preview
 @Composable
 fun RenderEmptyView(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.wrapContentSize(),
         text = "Add your thoughts",
-        style = MaterialTheme.typography.h3,
+        style = MaterialTheme.typography.h5,
         textAlign = TextAlign.Center,
     )
 }
 
+@Preview
 @Composable
 fun RenderFeedItem(
     modifier: Modifier = Modifier,
-    feed: FeedData,
+    feed: FeedData = FeedsData.getFeedData(),
 ) {
-    Box(modifier = modifier.clickable {  }) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 4.dp, end = 4.dp)
+            .clickable { }
+    ) {
         Card(
-            elevation = 16.dp,
-            shape = RoundedCornerShape(16.dp)
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 4.dp),
+            elevation = 4.dp,
+            shape = RoundedCornerShape(6.dp),
         ) {
-            Column {
+            Column(
+                modifier = modifier.padding(4.dp),
+            ) {
                 Spacer(modifier = modifier.padding(4.dp))
                 Text(
                     text = feed.text,
@@ -88,9 +112,10 @@ fun RenderFeedItem(
                 feed.moreInfo?.let {
                     Text(
                         text = it.reference,
-                        modifier = Modifier.padding(start = 4.dp, end = 4.dp),
+                        modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                         style = MaterialTheme.typography.body2,
-                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f),
+                        color = Color.Blue,
+                        fontStyle = FontStyle.Italic,
                     )
                 }
             }
@@ -98,17 +123,20 @@ fun RenderFeedItem(
     }
 }
 
+@Preview
 @Composable
 fun RenderDateView(
     modifier: Modifier = Modifier,
-    title: String,
+    title: String = "Today",
 ) {
     Text(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(4.dp),
+            .padding(4.dp)
+            .wrapContentWidth(),
         text = title,
+        textAlign = TextAlign.Center,
         maxLines = 1,
-        fontSize = 14.sp,
+        color = Color.Black,
+        style = MaterialTheme.typography.h6,
     )
 }

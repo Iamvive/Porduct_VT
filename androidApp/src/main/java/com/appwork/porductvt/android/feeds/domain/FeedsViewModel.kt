@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//@HiltViewModel
+@HiltViewModel
 class FeedsViewModel
-//@Inject
+@Inject
 constructor() : ViewModel() {
 
     private val _feedsUIState: MutableStateFlow<FeedsState> =

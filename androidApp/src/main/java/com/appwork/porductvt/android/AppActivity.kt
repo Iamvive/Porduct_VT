@@ -3,17 +3,19 @@ package com.appwork.porductvt.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.appwork.porductvt.android.feeds.domain.FeedsViewModel
+import com.appwork.porductvt.android.feeds.ui.RenderFeeds
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AppActivity : ComponentActivity() {
 
-    lateinit var feedsViewModel: FeedsViewModel
+    private val feedsViewModel: FeedsViewModel by viewModels()
 
     override fun onStart() {
         super.onStart()
@@ -23,16 +25,15 @@ class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        feedsViewModel = ViewModelProvider(this)[FeedsViewModel::class.java]
         setContent {
             MyApplicationTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-//                    RenderFeeds(
-//                        feedsViewModel = feedsViewModel,
-//                    )
+                    RenderFeeds(
+                        feedsViewModel = feedsViewModel,
+                    )
                 }
             }
         }
