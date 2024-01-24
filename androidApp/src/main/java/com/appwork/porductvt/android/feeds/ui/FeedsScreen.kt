@@ -21,14 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appwork.porductvt.android.feeds.domain.FeedsViewModel
 import com.appwork.porductvt.feeds.state.FeedsState
+import com.appwork.porductvt.feeds.ui.Feed
 import com.appwork.porductvt.feeds.ui.Feed.FeedData
 import com.appwork.porductvt.feeds.ui.Feed.FeedWithDate
-import com.appwork.porductvt.feeds.ui.FeedsPresenter
 
 @Composable
 fun RenderFeeds(
     feedsViewModel: FeedsViewModel,
-    presenter: FeedsPresenter,
 ) {
     val feedState = feedsViewModel.feedsUIState.collectAsState(
         initial = FeedsState(
@@ -39,14 +38,17 @@ fun RenderFeeds(
 
     feedState.value.feeds?.let {
         LazyColumn {
-            items(it) { feed ->
-                when (feed) {
-                    is FeedData -> RenderFeedItem(feed = feed, presenter = presenter)
-                    is FeedWithDate -> RenderDateView(title = feed.text)
-                }
-            }
+            items(it) { feed -> RenderFeedsByType(feed) }
         }
     } ?: RenderEmptyView()
+}
+
+@Composable
+private fun RenderFeedsByType(feed: Feed) {
+    when (feed) {
+        is FeedData -> RenderFeedItem(feed = feed)
+        is FeedWithDate -> RenderDateView(title = feed.text)
+    }
 }
 
 @Composable
@@ -65,9 +67,8 @@ fun RenderEmptyView(
 fun RenderFeedItem(
     modifier: Modifier = Modifier,
     feed: FeedData,
-    presenter: FeedsPresenter,
 ) {
-    Box(modifier = modifier.clickable { presenter.didTapItem() }) {
+    Box(modifier = modifier.clickable {  }) {
         Card(
             elevation = 16.dp,
             shape = RoundedCornerShape(16.dp)

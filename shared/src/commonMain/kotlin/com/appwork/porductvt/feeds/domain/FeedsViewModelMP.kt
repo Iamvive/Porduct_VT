@@ -4,19 +4,14 @@ import com.appwork.porductvt.commons.AppDispatchers.defaultDispatcher
 import com.appwork.porductvt.commons.AppDispatchers.ioDispatcher
 import com.appwork.porductvt.feeds.data.repo.FeedsRepo
 import com.appwork.porductvt.feeds.state.FeedsState
-import com.appwork.porductvt.feeds.ui.FeedsPresenter
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 class FeedsViewModelMP(
     private val scope: CoroutineScope,
     private val feedsRepo: FeedsRepo,
-    private val presenter: FeedsPresenter,
 ) {
 
     fun init() {

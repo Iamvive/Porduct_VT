@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.appwork.porductvt.commons.AppDispatchers
 import com.appwork.porductvt.feeds.FeedsViewModelFactory
 import com.appwork.porductvt.feeds.state.FeedsState
-import com.appwork.porductvt.feeds.ui.FeedsPresenter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,11 +12,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
+//@HiltViewModel
 class FeedsViewModel
-@Inject constructor(
-    feedsPresenter: FeedsPresenter,
-) : ViewModel() {
+//@Inject
+constructor() : ViewModel() {
 
     private val _feedsUIState: MutableStateFlow<FeedsState> =
         MutableStateFlow(FeedsState(isLoading = false, feeds = null))
@@ -27,7 +25,6 @@ class FeedsViewModel
 
     private val feedsViewModel = FeedsViewModelFactory.create(
         coroutineScope = viewModelScope,
-        presenter = feedsPresenter,
     )
 
     init {
@@ -43,9 +40,7 @@ class FeedsViewModel
         suspend fun invoke() {
             feedsViewModel.feedsState
                 .distinctUntilChanged()
-                .collect {
-                    _feedsUIState.tryEmit(it)
-                }
+                .collect { _feedsUIState.tryEmit(it) }
         }
     }
 }
