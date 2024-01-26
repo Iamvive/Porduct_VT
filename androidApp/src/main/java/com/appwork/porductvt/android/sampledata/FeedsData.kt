@@ -1,6 +1,6 @@
 package com.appwork.porductvt.android.sampledata
 
-import com.appwork.porductvt.feeds.ui.Feed
+import com.appwork.porductvt.features.feeds.ui.Feed
 
 object FeedsData {
     fun getFeedData() = Feed.FeedData(

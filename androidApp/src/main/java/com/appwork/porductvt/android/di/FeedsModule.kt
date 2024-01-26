@@ -1,30 +1,22 @@
 package com.appwork.porductvt.android.di
 
-import com.appwork.porductvt.commons.AppDispatchers.defaultDispatcher
-import com.appwork.porductvt.feeds.data.repo.FeedsRepo
-import com.appwork.porductvt.feeds.data.repo.FeedsRepoImp
-import com.appwork.porductvt.feeds.domain.FeedsViewModelMP
+import com.appwork.porductvt.features.feeds.FeedsViewModelFactory
+import com.appwork.porductvt.features.feeds.domain.FeedsViewModelMP
+import com.appwork.porductvt.features.feeds.usecases.FeedsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 
 @Module
 @InstallIn(ActivityComponent::class)
 object FeedsModule {
+    @Provides
+    internal fun provideFeedsUseCase(): FeedsUseCase =
+        FeedsViewModelFactory.create()
 
     @Provides
-    internal fun bindsFeedsRepo(): FeedsRepo = FeedsRepoImp()
-
-    @Provides
-    fun provideFeedsViewModelMP(
-        scope: CoroutineScope,
-        feedsRepo: FeedsRepo,
-    ): FeedsViewModelMP = FeedsViewModelMP(scope, feedsRepo)
-
-    @Provides
-    fun provideCoroutineContext(): CoroutineScope =
-        CoroutineScope(SupervisorJob() + defaultDispatcher)
+    internal fun providesFeedsViewModel(
+        useCase: FeedsUseCase,
+    ) = FeedsViewModelMP(useCase)
 }

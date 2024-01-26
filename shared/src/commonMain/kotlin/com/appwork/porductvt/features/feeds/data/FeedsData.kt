@@ -1,8 +1,8 @@
-package com.appwork.porductvt.feeds.data
+package com.appwork.porductvt.features.feeds.data
 
-import com.appwork.porductvt.feeds.ui.Feed.FeedData
-import com.appwork.porductvt.feeds.ui.Feed.FeedWithDate
-import com.appwork.porductvt.feeds.ui.FeedInfo
+import com.appwork.porductvt.features.feeds.ui.Feed.FeedData
+import com.appwork.porductvt.features.feeds.ui.Feed.FeedWithDate
+import com.appwork.porductvt.features.feeds.ui.FeedInfo
 import com.appwork.porductvt.utils.IdUtils
 import com.appwork.porductvt.utils.asString
 import kotlin.random.Random

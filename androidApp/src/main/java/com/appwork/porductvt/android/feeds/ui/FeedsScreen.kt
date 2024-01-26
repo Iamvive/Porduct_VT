@@ -17,7 +17,8 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,36 +26,65 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.appwork.porductvt.android.sampledata.FeedsData
-import com.appwork.porductvt.feeds.domain.FeedsViewModelMP
-import com.appwork.porductvt.feeds.state.FeedsState
-import com.appwork.porductvt.feeds.ui.Feed
-import com.appwork.porductvt.feeds.ui.Feed.FeedData
-import com.appwork.porductvt.feeds.ui.Feed.FeedWithDate
+import com.appwork.porductvt.features.feeds.FeedsEffect
+import com.appwork.porductvt.features.feeds.FeedsEffect.NavigateBack
+import com.appwork.porductvt.features.feeds.FeedsEffect.NavigateToAddFeed
+import com.appwork.porductvt.features.feeds.FeedsEffect.NavigateToFeed
+import com.appwork.porductvt.features.feeds.state.FeedsState
+import com.appwork.porductvt.features.feeds.ui.Feed
+import com.appwork.porductvt.features.feeds.ui.Feed.FeedData
+import com.appwork.porductvt.features.feeds.ui.Feed.FeedWithDate
+import com.appwork.porductvt.features.feeds.ui.FeedsEvent
+import com.appwork.porductvt.features.feeds.ui.FeedsEvent.FeedItemTapEvent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun RenderFeeds(
-    feedsViewModel: FeedsViewModelMP,
+    stateStream: StateFlow<FeedsState>,
+    onUiEvent: (FeedsEvent) -> Unit,
+    effectStream: Flow<FeedsEffect>,
+) {
+    val feedState by stateStream.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = Unit) {
+        effectStream.collectLatest { effect ->
+            executeEffect(effect)
+        }
+    }
+
+    feedState.feeds?.let {
+        RenderFeedsListColumn(
+            feeds = it,
+        ) { id -> onUiEvent(FeedItemTapEvent(id = id)) }
+    } ?: RenderEmptyView()
+}
+
+private fun executeEffect(effect: FeedsEffect) {
+    when (effect) {
+        NavigateBack -> println("Feeds screen current effect : $NavigateBack")
+        NavigateToAddFeed -> println("Feeds screen current effect : $NavigateToAddFeed")
+        is NavigateToFeed -> println("Feeds screen current effect : NavigateToFeed and id is ${effect.id}")
+    }
+}
+
+@Composable
+private fun RenderFeedsListColumn(
+    feeds: List<Feed>,
     didTapFeedItem: (String) -> Unit,
 ) {
-    val feedState = feedsViewModel.feedsState.collectAsState(
-        initial = FeedsState(
-            isLoading = true,
-            feeds = null,
-        ),
-    )
-
-    feedState.value.feeds?.let {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.LightGray),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            items(it) { feed -> RenderFeedsByType(feed, didTapFeedItem) }
-        }
-    } ?: RenderEmptyView()
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        items(feeds) { feed -> RenderFeedsByType(feed, didTapFeedItem) }
+    }
 }
 
 @Composable
@@ -91,7 +121,7 @@ fun RenderFeedItem(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 4.dp, end = 4.dp)
-            .clickable { didTapFeedItem(feed.id + feed.text)  }
+            .clickable { didTapFeedItem(feed.id) }
     ) {
         Card(
             modifier = modifier

@@ -8,7 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.appwork.porductvt.android.feeds.ui.RenderFeeds
-import com.appwork.porductvt.feeds.domain.FeedsViewModelMP
+import com.appwork.porductvt.features.feeds.domain.FeedsViewModelMP
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -33,15 +33,17 @@ class AppActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     RenderFeeds(
-                        feedsViewModel = feedsViewModel,
-                        didTapFeedItem = { didTapFeedItem(it) },
+                        stateStream = feedsViewModel.uiState,
+                        onUiEvent = { feedsEvent -> feedsViewModel.setEvent(feedsEvent) },
+                        effectStream = feedsViewModel.uiEffect,
                     )
                 }
             }
         }
     }
 
-    private fun didTapFeedItem(id: String) {
-        println("Item with id $id is tapped")
+    override fun onDestroy() {
+        super.onDestroy()
+        feedsViewModel.onClear()
     }
 }

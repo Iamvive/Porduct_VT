@@ -1,4 +1,4 @@
-package com.appwork.porductvt.feeds.ui
+package com.appwork.porductvt.features.feeds.ui
 
 sealed class Feed(
     open val id: String,
