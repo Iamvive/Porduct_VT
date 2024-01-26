@@ -25,8 +25,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.appwork.porductvt.android.feeds.domain.FeedsViewModel
 import com.appwork.porductvt.android.sampledata.FeedsData
+import com.appwork.porductvt.feeds.domain.FeedsViewModelMP
 import com.appwork.porductvt.feeds.state.FeedsState
 import com.appwork.porductvt.feeds.ui.Feed
 import com.appwork.porductvt.feeds.ui.Feed.FeedData
@@ -34,10 +34,10 @@ import com.appwork.porductvt.feeds.ui.Feed.FeedWithDate
 
 @Composable
 fun RenderFeeds(
-    feedsViewModel: FeedsViewModel,
+    feedsViewModel: FeedsViewModelMP,
     didTapFeedItem: (String) -> Unit,
 ) {
-    val feedState = feedsViewModel.feedsUIState.collectAsState(
+    val feedState = feedsViewModel.feedsState.collectAsState(
         initial = FeedsState(
             isLoading = true,
             feeds = null,
